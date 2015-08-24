@@ -29,7 +29,7 @@ module Logaling
     def convert_to_csv(csv)
       puts "downloading edict file..."
       url = 'http://ftp.monash.edu.au/pub/nihongo/edict.gz'
-      Zlib::GzipReader.open(open(url)) do |gz|
+      Zlib::GzipReader.open(open(url, { "Accept-Encoding" => "gzip, deflate" })) do |gz|
         puts "importing edict file..."
 
         lines = StringIO.new(gz.read).each_line
