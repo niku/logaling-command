@@ -13,9 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-require 'open-uri'
-require 'zlib'
-require 'stringio'
+require 'net/http'
 
 module Logaling
   class Edict < ExternalGlossary
@@ -29,10 +27,10 @@ module Logaling
     def convert_to_csv(csv)
       puts "downloading edict file..."
       url = 'http://ftp.monash.edu.au/pub/nihongo/edict.gz'
-      Zlib::GzipReader.open(open(url, { "Accept-Encoding" => "gzip, deflate" })) do |gz|
+      doc = Net::HTTP.get(URI.parse(url))
         puts "importing edict file..."
 
-        lines = StringIO.new(gz.read).each_line
+        lines = doc.each_line
 
         lines.next # skip header
 
@@ -45,7 +43,6 @@ module Logaling
           source = source.strip
           csv << [source, target]
         end
-      end
     end
   end
 end
