@@ -28,21 +28,21 @@ module Logaling
       puts "downloading edict file..."
       url = 'http://ftp.monash.edu.au/pub/nihongo/edict.gz'
       doc = Net::HTTP.get(URI.parse(url))
-        puts "importing edict file..."
+      puts "importing edict file..."
 
-        lines = doc.each_line
+      lines = doc.each_line
 
-        lines.next # skip header
+      lines.next # skip header
 
-        preprocessed_lines = lines.map do |line|
-          line.encode("UTF-8", "EUC-JP").chomp
-        end
+      preprocessed_lines = lines.map do |line|
+        line.encode("UTF-8", "EUC-JP").chomp
+      end
 
-        preprocessed_lines.each do |line|
-          source, target = line.split('/', 2)
-          source = source.strip
-          csv << [source, target]
-        end
+      preprocessed_lines.each do |line|
+        source, target = line.split('/', 2)
+        source = source.strip
+        csv << [source, target]
+      end
     end
   end
 end
