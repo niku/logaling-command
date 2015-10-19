@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-require 'net/http'
+require 'open-uri'
 
 module Logaling
   class Edict < ExternalGlossary
@@ -27,21 +27,14 @@ module Logaling
     def convert_to_csv(csv)
       puts "downloading edict file..."
       url = 'http://ftp.monash.edu.au/pub/nihongo/edict.gz'
-      doc = Net::HTTP.get(URI.parse(url))
-      puts "importing edict file..."
-
-      lines = doc.each_line
-
-      lines.next # skip header
-
-      preprocessed_lines = lines.map do |line|
-        line.encode("UTF-8", "EUC-JP").chomp
-      end
-
-      preprocessed_lines.each do |line|
-        source, target = line.split('/', 2)
-        source = source.strip
-        csv << [source, target]
+      open(url) do |edict|
+        edict.gets # skip header
+        edict.each_line do |raw_line|
+          line = raw_line.encode("UTF-8", "EUC-JP").chomp
+          source, target = line.split('/', 2)
+          source = source.strip
+          csv << [source, target]
+        end
       end
     end
   end
