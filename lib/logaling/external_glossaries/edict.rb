@@ -31,8 +31,9 @@ module Logaling
         edict.gets # skip header
         edict.each_line do |raw_line|
           line = raw_line.encode("UTF-8", "EUC-JP").chomp
-          source, target = line.split('/', 2)
-          source = source.strip
+          target, source = line.split('/', 2)
+          source.strip!
+          target.strip!
           csv << [source, target]
         end
       end
